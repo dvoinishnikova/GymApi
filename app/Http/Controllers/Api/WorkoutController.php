@@ -38,4 +38,22 @@ class WorkoutController extends Controller
             ], 400);
         }
     }
+    public function destroy($id, Request $request)
+    {
+        $workout = Workout::where('id', $id)
+            ->where('user_id', $request->user()->id)
+            ->first();
+
+        if (!$workout) {
+            return response()->json([
+                'message' => 'Тренування не знайдено'
+            ], 404);
+        }
+
+        $workout->delete();
+
+        return response()->json([
+            'message' => 'Тренування видалено'
+        ]);
+    }
 }
