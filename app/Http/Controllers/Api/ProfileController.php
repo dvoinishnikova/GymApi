@@ -9,10 +9,7 @@ class ProfileController extends Controller
 {
     public function me(Request $request)
     {
-        return response()->json([
-            'id' => $request->user()->id,
-            'name' => $request->user()->name,
-            'email' => $request->user()->email,
-        ]);
+        return response()->json($request->user());
     }
+
 }

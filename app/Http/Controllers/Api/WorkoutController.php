@@ -21,6 +21,14 @@ class WorkoutController extends Controller
 
     public function store(Request $request)
     {
+        $user = $request->user();
+        
+        if (!$user->hasActiveSubscription()) {
+            return response()->json([
+                'message' => 'Потрібен активний абонемент'
+            ], 403);
+        }
+
         $request->validate([
             'trainer_id' => 'required|exists:trainers,id',
             'date_time' => 'required|date',
@@ -28,11 +36,11 @@ class WorkoutController extends Controller
 
         try {
             return Workout::create([
-                'user_id' => $request->user()->id,
+                'user_id' => $user->id,
                 'trainer_id' => $request->trainer_id,
                 'date_time' => $request->date_time
             ]);
-        } catch (QueryException $e) {
+        } catch (\Illuminate\Database\QueryException $e) {
             return response()->json([
                 'message' => 'Цей час вже зайнятий'
             ], 400);
